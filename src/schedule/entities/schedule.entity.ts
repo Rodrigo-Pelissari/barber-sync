@@ -1,11 +1,11 @@
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { serviceType } from '../enums/serviceType.enum';
 import { Product } from 'src/product/entities/product.entity';
 
 @Entity('schedules')
 export class Schedule {
-  @Column({ primary: true, type: 'uuid' })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()

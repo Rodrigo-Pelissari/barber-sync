@@ -1,10 +1,10 @@
 import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('packages')
 export class Package {
-  @Column({ primary: true, type: 'uuid' })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
