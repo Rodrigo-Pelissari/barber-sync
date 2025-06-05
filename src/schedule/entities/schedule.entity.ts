@@ -25,4 +25,80 @@ export class Schedule {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   value: number;
+
+  constructor(
+    barber: User,
+    customer: User,
+    date: Date,
+    type: serviceType,
+    service: Product[],
+    value: number,
+  ) {
+    this.barber = barber;
+    this.customer = customer;
+    this.date = date;
+    this.type = type;
+    this.service = service;
+    this.value = value;
+  }
+
+  public setBarber(barber: User): void {
+    this.barber = barber;
+  }
+
+  public getBarber(): User {
+    return this.barber;
+  }
+
+  public setCustomer(customer: User): void {
+    this.customer = customer;
+  }
+
+  public getCustomer(): User {
+    return this.customer;
+  }
+
+  public setDate(date: Date): void {
+    this.date = date;
+  }
+
+  public getDate(): Date {
+    return this.date;
+  }
+
+  public setType(type: serviceType): void {
+    this.type = type;
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getType(): serviceType {
+    return this.type;
+  }
+
+  public setService(service: Product[]): void {
+    this.service = service;
+  }
+
+  public getService(): Product[] {
+    return this.service;
+  }
+
+  public setValue(value: number): void {
+    this.value = value;
+  }
+
+  public getValue(): number {
+    return this.value;
+  }
+
+  public setProducts(products: Product[]): void {
+    this.service = products;
+  }
+
+  public getProducts(): Product[] {
+    return this.service;
+  }
 }

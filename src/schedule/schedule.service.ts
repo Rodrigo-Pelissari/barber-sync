@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { Schedule } from './entities/schedule.entity';
 
 @Injectable()
 export class ScheduleService {
@@ -22,5 +23,17 @@ export class ScheduleService {
 
   remove(id: number) {
     return `This action removes a #${id} schedule`;
+  }
+
+  public setScheduleValue(schedule: Schedule): void {
+    let totalServiceValue = 0;
+
+    for (const service of schedule.getService()) {
+      if (service.getPrice() !== undefined) {
+        totalServiceValue += service.getPrice();
+      }
+    }
+
+    schedule.setValue(totalServiceValue);
   }
 }
