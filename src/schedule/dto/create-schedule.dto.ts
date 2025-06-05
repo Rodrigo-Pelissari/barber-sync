@@ -3,6 +3,7 @@ import { User } from 'src/user/entities/user.entity';
 import { serviceType } from '../enums/serviceType.enum';
 import { IsObject, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Schedule } from '../entities/schedule.entity';
 
 export class CreateScheduleDto {
   @IsObject()
@@ -31,4 +32,15 @@ export class CreateScheduleDto {
   @ValidateNested()
   @Type(() => Number)
   value: number;
+
+  public toEntity(): Schedule {
+    return new Schedule(
+      this.barber,
+      this.customer,
+      this.date,
+      this.type,
+      this.service,
+      this.value,
+    );
+  }
 }
