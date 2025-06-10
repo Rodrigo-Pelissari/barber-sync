@@ -70,7 +70,7 @@ export class UserService {
     return user;
   }
 
-  public async remove(id: string): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }
 }
