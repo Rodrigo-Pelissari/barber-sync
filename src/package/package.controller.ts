@@ -13,30 +13,30 @@ import { UpdatePackageDto } from './dto/update-package.dto';
 
 @Controller('package')
 export class PackageController {
-  constructor(private readonly packageService: PackageService) {}
+  constructor(private readonly service: PackageService) {}
 
   @Post()
   create(@Body() createPackageDto: CreatePackageDto) {
-    return this.packageService.create(createPackageDto);
+    return this.service.create(createPackageDto);
   }
 
   @Get()
   findAll() {
-    return this.packageService.findAll();
+    return this.service.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.packageService.findOne(+id);
+    return this.service.findById(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePackageDto: UpdatePackageDto) {
-    return this.packageService.update(+id, updatePackageDto);
+    return this.service.update(id, updatePackageDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.packageService.remove(+id);
+    return this.service.delete(id);
   }
 }
