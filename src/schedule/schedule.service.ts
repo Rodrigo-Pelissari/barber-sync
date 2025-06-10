@@ -20,18 +20,18 @@ export class ScheduleService {
   ): Promise<ScheduleDto> {
     const entity = createScheduleDto.toEntity();
 
-    this.setScheduleProductsAndValue(entity);
+    await this.setScheduleProductsAndValue(entity);
 
-    await this.scheduleRepository.save(entity);
+    const savedEntity = await this.scheduleRepository.save(entity);
 
     return new ScheduleDto(
-      entity.id,
-      entity.barber,
-      entity.customer,
-      entity.date,
-      entity.type,
-      entity.service,
-      entity.value,
+      savedEntity.id,
+      savedEntity.barber,
+      savedEntity.customer,
+      savedEntity.date,
+      savedEntity.type,
+      savedEntity.service,
+      savedEntity.value,
     );
   }
 
