@@ -11,23 +11,23 @@ import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 
-@Controller('schedule')
+@Controller('schedules')
 export class ScheduleController {
-  constructor(private readonly scheduleService: ScheduleService) {}
+  constructor(private readonly service: ScheduleService) {}
 
   @Post()
   create(@Body() createScheduleDto: CreateScheduleDto) {
-    return this.scheduleService.create(createScheduleDto);
+    return this.service.create(createScheduleDto);
   }
 
   @Get()
   findAll() {
-    return this.scheduleService.findAll();
+    return this.service.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.scheduleService.findOne(+id);
+    return this.service.findById(id);
   }
 
   @Patch(':id')
@@ -35,11 +35,11 @@ export class ScheduleController {
     @Param('id') id: string,
     @Body() updateScheduleDto: UpdateScheduleDto,
   ) {
-    return this.scheduleService.update(+id, updateScheduleDto);
+    return this.service.update(id, updateScheduleDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.scheduleService.remove(+id);
+    return this.service.delete(id);
   }
 }
