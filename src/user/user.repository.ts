@@ -10,19 +10,19 @@ export class ScheduleRepository {
     private readonly repository: Repository<User>,
   ) {}
 
-  async save(entity: User): Promise<User> {
+  public async save(entity: User): Promise<User> {
     return await this.repository.save(entity);
   }
 
-  async findAll(): Promise<User[]> {
+  public async findAll(): Promise<User[]> {
     return await this.repository.find();
   }
 
-  async findById(id: string): Promise<User | null> {
+  public async findById(id: string): Promise<User | null> {
     return await this.repository.findOneBy({ id });
   }
 
-  async delete(id: string): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }
 }
