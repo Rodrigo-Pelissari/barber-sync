@@ -20,7 +20,7 @@ export class ProductService {
     return await this.repository.findAll();
   }
 
-  public async findOne(id: string): Promise<Product | null> {
+  public async findById(id: string): Promise<Product | null> {
     return await this.repository.findById(id);
   }
 
@@ -30,7 +30,8 @@ export class ProductService {
   ): Promise<Product | null> {
     const product = await this.repository.findById(id);
 
-    if (!product) throw new NotFoundException('Product not found');
+    if (!product)
+      throw new NotFoundException(`Product with id ${id} not found`);
 
     updateProductDto.update(product);
 
