@@ -1,15 +1,16 @@
 import { Schedule } from 'src/schedule/entities/schedule.entity';
+import { User } from 'src/user/entities/user.entity';
 
 export class PackageDto {
   id: string;
-  customer: string;
+  customer: User;
   value: number;
   servicesQuantity: number;
   usedServices: Schedule[];
 
   constructor(
     id: string,
-    customer: string,
+    customer: User,
     value: number,
     servicesQuantity: number,
     usedServices: Schedule[],
