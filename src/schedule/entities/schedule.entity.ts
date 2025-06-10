@@ -101,4 +101,17 @@ export class Schedule {
   public getProducts(): Product[] {
     return this.service;
   }
+
+  public addProduct(product: Product): void {
+    if (!this.service) {
+      this.service = [];
+    }
+    this.service.push(product);
+  }
+
+  public removeProduct(productId: string): void {
+    if (this.service) {
+      this.service = this.service.filter((product) => product.id !== productId);
+    }
+  }
 }
