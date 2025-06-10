@@ -42,7 +42,7 @@ export class UserService {
     );
   }
 
-  public async findOne(id: string): Promise<UserDto | null> {
+  public async findById(id: string): Promise<UserDto | null> {
     const user = await this.repository.findOneBy({ id });
     if (!user) return null;
     return new UserDto(
@@ -61,7 +61,7 @@ export class UserService {
   ): Promise<User | null> {
     const user = await this.repository.findOneBy({ id });
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
     updateUserDto.update(user);
 
