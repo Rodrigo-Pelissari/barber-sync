@@ -5,12 +5,14 @@ import { Schedule } from './entities/schedule.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScheduleRepository } from './schedule.repository';
 import { ScheduleDto } from './dto/schedule.dto';
+import { ProductRepository } from 'src/product/product.repository';
 
 @Injectable()
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private readonly scheduleRepository: ScheduleRepository,
+    private readonly productRepository: ProductRepository,
   ) {}
 
   public async create(
@@ -18,7 +20,7 @@ export class ScheduleService {
   ): Promise<ScheduleDto> {
     const entity = createScheduleDto.toEntity();
 
-    this.setScheduleValue(entity);
+    this.setScheduleProductsAndValue(entity);
 
     await this.scheduleRepository.save(entity);
 
@@ -95,12 +97,17 @@ export class ScheduleService {
     await this.scheduleRepository.delete(id);
   }
 
-  public setScheduleValue(schedule: Schedule): void {
+  public async setScheduleProductsAndValue(schedule: Schedule): Promise<void> {
     let totalServiceValue = 0;
 
-    for (const service of schedule.getService()) {
-      if (service.getPrice() !== undefined) {
-        totalServiceValue += service.getPrice();
+    for (const product of schedule.getService()) {
+      const productEntity = await this.productRepository.findById(product.id);
+      if (productEntity) {
+        schedule.addProduct(productEntity);
+        totalServiceValue += productEntity.getPrice();
+      } else {
+        throw new NotFoundException(`
+          [ADD PRODUCT]: Product with id ${product.id} not found`);
       }
     }
 
