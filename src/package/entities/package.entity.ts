@@ -1,13 +1,21 @@
 import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('packages')
 export class Package {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @OneToOne(() => User, { eager: true, cascade: true })
+  @JoinColumn()
   customer: User;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -16,7 +24,8 @@ export class Package {
   @Column({ type: 'int' })
   servicesQuantity: number;
 
-  @Column()
+  @ManyToOne(() => Schedule, { eager: true, cascade: true })
+  @JoinColumn()
   usedServices: Schedule[];
 
   constructor(

@@ -10,6 +10,7 @@ import {
 import { PackageService } from './package.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('package')
 export class PackageController {
@@ -17,7 +18,8 @@ export class PackageController {
 
   @Post()
   create(@Body() createPackageDto: CreatePackageDto) {
-    return this.service.create(createPackageDto);
+    const dto = plainToInstance(CreatePackageDto, createPackageDto);
+    return this.service.create(dto);
   }
 
   @Get()

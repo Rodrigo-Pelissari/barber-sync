@@ -1,17 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Package } from './entities/package.entity';
 import { PackageDto } from './dto/package.dto';
 import { PackageRepository } from './package.repository';
 
 @Injectable()
 export class PackageService {
-  constructor(
-    @InjectRepository(Package)
-    private readonly repository: PackageRepository,
-  ) {}
+  constructor(private readonly repository: PackageRepository) {}
 
   public async create(createPackageDto: CreatePackageDto): Promise<PackageDto> {
     const entity = createPackageDto.toEntity();
