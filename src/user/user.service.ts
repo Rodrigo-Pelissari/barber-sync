@@ -3,14 +3,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly repository: Repository<User>,
+    @InjectRepository(User) private readonly repository: UserRepository,
   ) {}
 
   public async create(createUserDto: CreateUserDto): Promise<UserDto> {
@@ -28,7 +27,7 @@ export class UserService {
   }
 
   public async findAll(): Promise<UserDto[]> {
-    const users = await this.repository.find();
+    const users = await this.repository.findAll();
     return users.map(
       (user) =>
         new UserDto(
@@ -43,7 +42,7 @@ export class UserService {
   }
 
   public async findById(id: string): Promise<UserDto | null> {
-    const user = await this.repository.findOneBy({ id });
+    const user = await this.repository.findById(id);
     if (!user) return null;
     return new UserDto(
       user.id,
@@ -59,7 +58,7 @@ export class UserService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<User | null> {
-    const user = await this.repository.findOneBy({ id });
+    const user = await this.repository.findById(id);
 
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
