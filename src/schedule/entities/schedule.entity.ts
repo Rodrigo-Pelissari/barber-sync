@@ -1,5 +1,12 @@
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { serviceType } from '../enums/serviceType.enum';
 import { Product } from 'src/product/entities/product.entity';
 
@@ -8,10 +15,12 @@ export class Schedule {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @OneToOne(() => User, { eager: true, cascade: true })
+  @JoinColumn()
   barber: User;
 
-  @Column()
+  @OneToOne(() => User, { eager: true, cascade: true })
+  @JoinColumn()
   customer: User;
 
   @Column({ type: 'timestamp' })
@@ -20,7 +29,8 @@ export class Schedule {
   @Column({ type: 'enum', enum: serviceType })
   type: serviceType;
 
-  @Column()
+  @ManyToOne(() => Product, { eager: true, cascade: true })
+  @JoinColumn()
   service: Product[];
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })

@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { Schedule } from './entities/schedule.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ScheduleRepository } from './schedule.repository';
 import { ScheduleDto } from './dto/schedule.dto';
 import { ProductRepository } from 'src/product/product.repository';
@@ -10,7 +9,6 @@ import { ProductRepository } from 'src/product/product.repository';
 @Injectable()
 export class ScheduleService {
   constructor(
-    @InjectRepository(Schedule)
     private readonly scheduleRepository: ScheduleRepository,
     private readonly productRepository: ProductRepository,
   ) {}

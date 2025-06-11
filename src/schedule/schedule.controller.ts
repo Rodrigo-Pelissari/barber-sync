@@ -10,6 +10,7 @@ import {
 import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('schedules')
 export class ScheduleController {
@@ -17,7 +18,8 @@ export class ScheduleController {
 
   @Post()
   create(@Body() createScheduleDto: CreateScheduleDto) {
-    return this.service.create(createScheduleDto);
+    const dto = plainToInstance(CreateScheduleDto, createScheduleDto);
+    return this.service.create(dto);
   }
 
   @Get()
