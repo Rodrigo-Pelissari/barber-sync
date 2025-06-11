@@ -16,4 +16,5 @@ COPY . .
 # Habilita o módulo crypto globalmente (solução alternativa)
 RUN echo "global.crypto = require('crypto');" >> /app/node_modules/@nestjs/typeorm/dist/common/typeorm.utils.js
 
-CMD ["npm", "run", "start"]
+# Por padrão, o container vai rodar o comando de desenvolvimento, que ativa o watch
+CMD ["npm", "run", "start:dev"]
