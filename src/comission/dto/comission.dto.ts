@@ -1,11 +1,11 @@
-import { User } from 'src/user/entities/user.entity';
+import { UserDto } from 'src/user/dto/user.dto';
 
 export class ComissionDto {
-  barber: User;
+  barber: UserDto;
   value: number;
   date: Date;
 
-  constructor(barber: User, value: number, date: Date) {
+  constructor(barber: UserDto, value: number, date: Date) {
     this.barber = barber;
     this.value = value;
     this.date = date;
