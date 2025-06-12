@@ -4,7 +4,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { serviceType } from '../enums/serviceType.enum';
@@ -15,12 +14,12 @@ export class Schedule {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => User, { eager: true, cascade: true })
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.barberSchedules, { eager: true })
+  @JoinColumn({ name: 'barberId' })
   barber: User;
 
-  @OneToOne(() => User, { eager: true, cascade: true })
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.customerSchedules, { eager: true })
+  @JoinColumn({ name: 'customerId' })
   customer: User;
 
   @Column({ type: 'timestamp' })
@@ -35,6 +34,9 @@ export class Schedule {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   value: number;
+
+  @Column()
+  concluded: boolean;
 
   constructor(
     barber: User,
@@ -70,6 +72,10 @@ export class Schedule {
 
   public setDate(date: Date): void {
     this.date = date;
+  }
+
+  public setConcluded(concluded: boolean): void {
+    this.concluded = concluded;
   }
 
   public getDate(): Date {
@@ -110,6 +116,10 @@ export class Schedule {
 
   public getProducts(): Product[] {
     return this.service;
+  }
+
+  public getConcluded(): boolean {
+    return this.concluded;
   }
 
   public addProduct(product: Product): void {

@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from '../enums/role.enum';
+import { Schedule } from 'src/schedule/entities/schedule.entity';
 
 @Entity('users')
 export class User {
@@ -15,7 +16,7 @@ export class User {
   @Column({ type: 'varchar', unique: true })
   email: string;
 
-  @Column({ type: 'varchar', unique: true })
+  @Column({ type: 'varchar' })
   phone: string;
 
   @Column()
@@ -23,6 +24,12 @@ export class User {
 
   @Column({ type: 'enum', enum: Role })
   role: Role;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.barber)
+  barberSchedules: Schedule[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.customer)
+  customerSchedules: Schedule[];
 
   constructor(
     name: string,

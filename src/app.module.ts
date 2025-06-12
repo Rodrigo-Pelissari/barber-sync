@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { ProductModule } from './product/product.module';
 import { PackageModule } from './package/package.module';
+import { ComissionModule } from './comission/comission.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PackageModule } from './package/package.module';
     ScheduleModule,
     ProductModule,
     PackageModule,
+    ComissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

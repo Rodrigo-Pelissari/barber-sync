@@ -11,37 +11,47 @@ import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { plainToInstance } from 'class-transformer';
+import { UserService } from 'src/user/user.service';
 
 @Controller('schedules')
 export class ScheduleController {
-  constructor(private readonly service: ScheduleService) {}
+  constructor(
+    private readonly service: ScheduleService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post()
-  create(@Body() createScheduleDto: CreateScheduleDto) {
+  public async create(
+    @Body() createScheduleDto: CreateScheduleDto,
+    userId: string,
+    name: string,
+  ) {
+    const user = await this.userService.findEntityById(userId);
     const dto = plainToInstance(CreateScheduleDto, createScheduleDto);
-    return this.service.create(dto);
+
+    return await this.service.create(dto, user, name);
   }
 
   @Get()
-  findAll() {
-    return this.service.findAll();
+  public async findAll() {
+    return await this.service.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.service.findById(id);
+  public async findOne(@Param('id') id: string) {
+    return await this.service.findById(id);
   }
 
   @Patch(':id')
-  update(
+  public async update(
     @Param('id') id: string,
     @Body() updateScheduleDto: UpdateScheduleDto,
   ) {
-    return this.service.update(id, updateScheduleDto);
+    return await this.service.update(id, updateScheduleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.service.delete(id);
+  public async remove(@Param('id') id: string) {
+    return await this.service.delete(id);
   }
 }

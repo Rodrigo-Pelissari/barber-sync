@@ -1,30 +1,38 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
 import { ProductRepository } from './product.repository';
+import { ProductDto } from './dto/product.dto';
 
 @Injectable()
 export class ProductService {
   constructor(private readonly repository: ProductRepository) {}
 
-  public async create(createProductDto: CreateProductDto): Promise<Product> {
+  public async create(createProductDto: CreateProductDto): Promise<ProductDto> {
     const entity = createProductDto.toEntity();
-    return await this.repository.save(entity);
+    await this.repository.save(entity);
+    return new ProductDto(entity);
   }
 
-  public async findAll(): Promise<Product[]> {
-    return await this.repository.findAll();
+  public async findAll(): Promise<ProductDto[]> {
+    const products = await this.repository.findAll();
+    return products.map((product) => new ProductDto(product));
   }
 
-  public async findById(id: string): Promise<Product | null> {
-    return await this.repository.findById(id);
+  public async findById(id: string): Promise<ProductDto | null> {
+    const product = await this.repository.findById(id);
+    return product ? new ProductDto(product) : null;
+  }
+
+  public async findByName(name: string): Promise<ProductDto | null> {
+    const product = await this.repository.findByName(name);
+    return product ? new ProductDto(product) : null;
   }
 
   public async update(
     id: string,
     updateProductDto: UpdateProductDto,
-  ): Promise<Product | null> {
+  ): Promise<ProductDto | null> {
     const product = await this.repository.findById(id);
 
     if (!product)
@@ -32,7 +40,8 @@ export class ProductService {
 
     updateProductDto.update(product);
 
-    return await this.repository.save(product);
+    await this.repository.save(product);
+    return new ProductDto(product);
   }
 
   public async delete(id: string) {
