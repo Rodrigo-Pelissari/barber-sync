@@ -1,19 +1,19 @@
-import { Schedule } from 'src/schedule/entities/schedule.entity';
-import { User } from 'src/user/entities/user.entity';
+import { ScheduleDto } from 'src/schedule/dto/schedule.dto';
+import { UserDto } from 'src/user/dto/user.dto';
 
 export class PackageDto {
   id: string;
-  customer: User;
+  customer: UserDto;
   value: number;
   servicesQuantity: number;
-  usedServices: Schedule[];
+  usedServices: ScheduleDto[];
 
   constructor(
     id: string,
-    customer: User,
+    customer: UserDto,
     value: number,
     servicesQuantity: number,
-    usedServices: Schedule[],
+    usedServices: ScheduleDto[],
   ) {
     this.id = id;
     this.customer = customer;
