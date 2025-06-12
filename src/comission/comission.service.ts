@@ -14,17 +14,12 @@ export class ComissionService {
     const entity = createComissionDto.toEntity();
     const savedEntity = await this.comissionRepository.save(entity);
 
-    return new ComissionDto(
-      savedEntity.barber,
-      savedEntity.value,
-      savedEntity.date,
-    );
+    return new ComissionDto(savedEntity);
   }
 
   public async findAll(): Promise<ComissionDto[]> {
     return (await this.comissionRepository.findAll()).map(
-      (comission) =>
-        new ComissionDto(comission.barber, comission.value, comission.date),
+      (comission) => new ComissionDto(comission),
     );
   }
 
@@ -33,24 +28,18 @@ export class ComissionService {
     if (!comission)
       throw new NotFoundException(`Comission with id ${id} not found`);
 
-    return new ComissionDto(comission.barber, comission.value, comission.date);
+    return new ComissionDto(comission);
   }
 
   public async findByBarberId(barberId: string): Promise<ComissionDto[]> {
     const comissions = await this.comissionRepository.findByBarberId(barberId);
-    return comissions.map(
-      (comission) =>
-        new ComissionDto(comission.barber, comission.value, comission.date),
-    );
+    return comissions.map((comission) => new ComissionDto(comission));
   }
 
   public async findByBarberName(barberName: string): Promise<ComissionDto[]> {
     const comissions =
       await this.comissionRepository.findByBarberName(barberName);
-    return comissions.map(
-      (comission) =>
-        new ComissionDto(comission.barber, comission.value, comission.date),
-    );
+    return comissions.map((comission) => new ComissionDto(comission));
   }
 
   public async update(
@@ -67,11 +56,7 @@ export class ComissionService {
     );
     await this.comissionRepository.save(updatedComission);
 
-    return new ComissionDto(
-      updatedComission.barber,
-      updatedComission.value,
-      updatedComission.date,
-    );
+    return new ComissionDto(updatedComission);
   }
 
   public async delete(id: string): Promise<void> {

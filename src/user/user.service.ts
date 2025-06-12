@@ -11,59 +11,28 @@ export class UserService {
 
   public async create(createUserDto: CreateUserDto): Promise<UserDto> {
     const entity = createUserDto.toEntity();
-    await this.repository.save(entity);
+    const savedEntity = await this.repository.save(entity);
 
-    return new UserDto(
-      entity.getId(),
-      entity.getName(),
-      entity.getCpf(),
-      entity.getEmail(),
-      entity.getPhone(),
-      entity.getRole(),
-    );
+    return new UserDto(savedEntity);
   }
 
   public async findAll(): Promise<UserDto[]> {
     const users = await this.repository.findAll();
-    return users.map(
-      (user) =>
-        new UserDto(
-          user.getId(),
-          user.getName(),
-          user.getCpf(),
-          user.getEmail(),
-          user.getPhone(),
-          user.getRole(),
-        ),
-    );
+    return users.map((user) => new UserDto(user));
   }
 
   public async findById(id: string): Promise<UserDto | null> {
     const user = await this.repository.findById(id);
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
-    return new UserDto(
-      user.getId(),
-      user.getName(),
-      user.getCpf(),
-      user.getEmail(),
-      user.getPhone(),
-      user.getRole(),
-    );
+    return new UserDto(user);
   }
 
   public async findByName(name: string): Promise<UserDto | null> {
     const user = await this.repository.findByName(name);
     if (!user) throw new NotFoundException(`User with name ${name} not found`);
 
-    return new UserDto(
-      user.getId(),
-      user.getName(),
-      user.getCpf(),
-      user.getEmail(),
-      user.getPhone(),
-      user.getRole(),
-    );
+    return new UserDto(user);
   }
 
   public async update(
@@ -78,14 +47,7 @@ export class UserService {
 
     await this.repository.save(updatedUser);
 
-    return new UserDto(
-      updatedUser.getId(),
-      updatedUser.getName(),
-      updatedUser.getCpf(),
-      updatedUser.getEmail(),
-      updatedUser.getPhone(),
-      updatedUser.getRole(),
-    );
+    return new UserDto(updatedUser);
   }
 
   public async delete(id: string): Promise<void> {

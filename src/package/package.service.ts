@@ -12,28 +12,13 @@ export class PackageService {
     const entity = createPackageDto.toEntity();
     const savedEntity = await this.repository.save(entity);
 
-    return new PackageDto(
-      savedEntity.id,
-      savedEntity.customer,
-      savedEntity.value,
-      savedEntity.servicesQuantity,
-      savedEntity.usedServices,
-    );
+    return new PackageDto(savedEntity);
   }
 
   public async findAll(): Promise<PackageDto[]> {
     const entities = await this.repository.findAll();
 
-    return entities.map(
-      (entity) =>
-        new PackageDto(
-          entity.id,
-          entity.customer,
-          entity.value,
-          entity.servicesQuantity,
-          entity.usedServices,
-        ),
-    );
+    return entities.map((entity) => new PackageDto(entity));
   }
 
   public async findById(id: string): Promise<PackageDto> {
@@ -41,13 +26,7 @@ export class PackageService {
     if (!entity) {
       throw new Error(`Package with id ${id} not found`);
     }
-    return new PackageDto(
-      entity.id,
-      entity.customer,
-      entity.value,
-      entity.servicesQuantity,
-      entity.usedServices,
-    );
+    return new PackageDto(entity);
   }
 
   public async update(
@@ -65,13 +44,7 @@ export class PackageService {
 
     const updatedEntity = await this.repository.save(updatedPackage);
 
-    return new PackageDto(
-      updatedEntity.id,
-      updatedEntity.customer,
-      updatedEntity.value,
-      updatedEntity.servicesQuantity,
-      updatedEntity.usedServices,
-    );
+    return new PackageDto(updatedEntity);
   }
 
   public async delete(id: string): Promise<void> {

@@ -20,4 +20,28 @@ export class Comission {
     this.value = value;
     this.date = date;
   }
+
+  public setBarber(barber: User): void {
+    this.barber = barber;
+  }
+
+  public getBarber(): User {
+    return this.barber;
+  }
+
+  public setValue(value: number): void {
+    this.value = value;
+  }
+
+  public getValue(): number {
+    return this.value;
+  }
+
+  public setDate(date: Date): void {
+    this.date = date;
+  }
+
+  public getDate(): Date {
+    return this.date;
+  }
 }
