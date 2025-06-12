@@ -29,4 +29,8 @@ export class UserRepository {
   public async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }
+
+  public async merge(target: User, source: Partial<User>): Promise<User> {
+    return this.repository.merge(target, source);
+  }
 }

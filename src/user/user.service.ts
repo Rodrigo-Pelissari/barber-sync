@@ -69,16 +69,23 @@ export class UserService {
   public async update(
     id: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<User | null> {
+  ): Promise<UserDto | null> {
     const user = await this.repository.findById(id);
 
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
-    updateUserDto.update(user);
+    const updatedUser = await this.repository.merge(user, updateUserDto);
 
-    await this.repository.save(user);
+    await this.repository.save(updatedUser);
 
-    return user;
+    return new UserDto(
+      updatedUser.getId(),
+      updatedUser.getName(),
+      updatedUser.getCpf(),
+      updatedUser.getEmail(),
+      updatedUser.getPhone(),
+      updatedUser.getRole(),
+    );
   }
 
   public async delete(id: string): Promise<void> {
