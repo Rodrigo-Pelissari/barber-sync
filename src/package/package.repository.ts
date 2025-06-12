@@ -25,4 +25,11 @@ export class PackageRepository {
   async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }
+
+  public async merge(
+    target: Package,
+    source: Partial<Package>,
+  ): Promise<Package> {
+    return this.repository.merge(target, source);
+  }
 }

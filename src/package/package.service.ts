@@ -58,9 +58,12 @@ export class PackageService {
 
     if (!entity) throw new NotFoundException(`Package with id ${id} not found`);
 
-    updatePackageDto.update(entity);
+    const updatedPackage = await this.repository.merge(
+      entity,
+      updatePackageDto,
+    );
 
-    const updatedEntity = await this.repository.save(entity);
+    const updatedEntity = await this.repository.save(updatedPackage);
 
     return new PackageDto(
       updatedEntity.id,
