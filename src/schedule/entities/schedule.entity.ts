@@ -4,7 +4,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { serviceType } from '../enums/serviceType.enum';
@@ -15,12 +14,12 @@ export class Schedule {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => User, { eager: true, cascade: true })
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.barberSchedules, { eager: true })
+  @JoinColumn({ name: 'barberId' })
   barber: User;
 
-  @OneToOne(() => User, { eager: true, cascade: true })
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.customerSchedules, { eager: true })
+  @JoinColumn({ name: 'customerId' })
   customer: User;
 
   @Column({ type: 'timestamp' })
