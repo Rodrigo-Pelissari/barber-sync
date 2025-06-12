@@ -36,6 +36,9 @@ export class Schedule {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   value: number;
 
+  @Column()
+  concluded: boolean;
+
   constructor(
     barber: User,
     customer: User,
@@ -70,6 +73,10 @@ export class Schedule {
 
   public setDate(date: Date): void {
     this.date = date;
+  }
+
+  public setConcluded(concluded: boolean): void {
+    this.concluded = concluded;
   }
 
   public getDate(): Date {
@@ -110,6 +117,10 @@ export class Schedule {
 
   public getProducts(): Product[] {
     return this.service;
+  }
+
+  public getConcluded(): boolean {
+    return this.concluded;
   }
 
   public addProduct(product: Product): void {

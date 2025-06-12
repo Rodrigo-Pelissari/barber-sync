@@ -4,25 +4,25 @@ import { Role } from '../enums/role.enum';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  private id: string;
 
   @Column()
-  name: string;
+  private name: string;
 
   @Column({ type: 'varchar', length: 11, unique: true })
-  cpf: string;
+  private cpf: string;
 
   @Column({ type: 'varchar', unique: true })
-  email: string;
+  private email: string;
 
   @Column({ type: 'varchar', unique: true })
-  phone: string;
+  private phone: string;
 
   @Column()
-  password: string;
+  private password: string;
 
   @Column({ type: 'enum', enum: Role })
-  role: Role;
+  private role: Role;
 
   constructor(
     name: string,
