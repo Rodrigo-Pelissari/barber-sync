@@ -9,6 +9,7 @@ import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
 import { ComissionService } from 'src/comission/comission.service';
 import { CreateComissionDto } from 'src/comission/dto/create-comission.dto';
+import { Product } from 'src/product/entities/product.entity';
 
 @Injectable()
 export class ScheduleService {
@@ -24,20 +25,12 @@ export class ScheduleService {
     user: User,
     otherUserName: string,
   ): Promise<ScheduleDto> {
-    const entity = createScheduleDto.toEntity();
-
     const otherUser = await this.userRepository.findByName(otherUserName);
     if (!otherUser) {
       throw new NotFoundException(`User with name ${otherUserName} not found`);
     }
 
-    if (user.getRole() === 'customer') {
-      entity.setCustomer(user);
-      entity.setBarber(otherUser);
-    } else {
-      entity.setCustomer(otherUser);
-      entity.setBarber(user);
-    }
+    const products: Product[] = [];
 
     for (const productName of createScheduleDto.productsNames) {
       const product = await this.productRepository.findByName(productName);
@@ -46,11 +39,20 @@ export class ScheduleService {
           `Product with name ${productName} not found`,
         );
       }
-      entity.addProduct(product);
+      products.push(product);
     }
 
+    const entity = new Schedule(
+      user.role === 'customer' ? otherUser : user,
+      user.role !== 'customer' ? user : otherUser,
+      createScheduleDto.date,
+      createScheduleDto.type,
+      products,
+      0,
+      false,
+    );
+
     await this.setScheduleProductsAndValue(entity);
-    entity.setConcluded(false);
 
     const savedEntity = await this.scheduleRepository.save(entity);
 
