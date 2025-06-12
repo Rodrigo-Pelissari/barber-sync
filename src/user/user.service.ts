@@ -14,12 +14,12 @@ export class UserService {
     await this.repository.save(entity);
 
     return new UserDto(
-      entity.id,
-      entity.name,
-      entity.cpf,
-      entity.email,
-      entity.phone,
-      entity.role,
+      entity.getId(),
+      entity.getName(),
+      entity.getCpf(),
+      entity.getEmail(),
+      entity.getPhone(),
+      entity.getRole(),
     );
   }
 
@@ -28,12 +28,12 @@ export class UserService {
     return users.map(
       (user) =>
         new UserDto(
-          user.id,
-          user.name,
-          user.cpf,
-          user.email,
-          user.phone,
-          user.role,
+          user.getId(),
+          user.getName(),
+          user.getCpf(),
+          user.getEmail(),
+          user.getPhone(),
+          user.getRole(),
         ),
     );
   }
@@ -43,12 +43,12 @@ export class UserService {
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
     return new UserDto(
-      user.id,
-      user.name,
-      user.cpf,
-      user.email,
-      user.phone,
-      user.role,
+      user.getId(),
+      user.getName(),
+      user.getCpf(),
+      user.getEmail(),
+      user.getPhone(),
+      user.getRole(),
     );
   }
 
@@ -57,12 +57,12 @@ export class UserService {
     if (!user) throw new NotFoundException(`User with name ${name} not found`);
 
     return new UserDto(
-      user.id,
-      user.name,
-      user.cpf,
-      user.email,
-      user.phone,
-      user.role,
+      user.getId(),
+      user.getName(),
+      user.getCpf(),
+      user.getEmail(),
+      user.getPhone(),
+      user.getRole(),
     );
   }
 
