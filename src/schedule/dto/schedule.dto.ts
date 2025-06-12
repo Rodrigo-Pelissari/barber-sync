@@ -1,6 +1,7 @@
 import { serviceType } from '../enums/serviceType.enum';
 import { UserDto } from 'src/user/dto/user.dto';
 import { ProductDto } from 'src/product/dto/product.dto';
+import { Schedule } from '../entities/schedule.entity';
 
 export class ScheduleDto {
   public id: string;
@@ -11,21 +12,15 @@ export class ScheduleDto {
   public service: ProductDto[];
   public value: number;
 
-  constructor(
-    id: string,
-    barber: UserDto,
-    customer: UserDto,
-    date: Date,
-    type: serviceType,
-    service: ProductDto[],
-    value: number,
-  ) {
-    this.id = id;
-    this.barber = barber;
-    this.customer = customer;
-    this.date = date;
-    this.type = type;
-    this.service = service;
-    this.value = value;
+  constructor(entity: Schedule) {
+    this.id = entity.getId();
+    this.barber = new UserDto(entity.getBarber());
+    this.customer = new UserDto(entity.getCustomer());
+    this.date = entity.getDate();
+    this.type = entity.getType();
+    this.service = entity
+      .getService()
+      .map((product) => new ProductDto(product));
+    this.value = entity.getValue();
   }
 }

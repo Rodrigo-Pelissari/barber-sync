@@ -1,13 +1,14 @@
 import { UserDto } from 'src/user/dto/user.dto';
+import { Comission } from '../entities/comission.entity';
 
 export class ComissionDto {
   barber: UserDto;
   value: number;
   date: Date;
 
-  constructor(barber: UserDto, value: number, date: Date) {
-    this.barber = barber;
-    this.value = value;
-    this.date = date;
+  constructor(entity: Comission) {
+    this.barber = new UserDto(entity.getBarber());
+    this.value = entity.getValue();
+    this.date = entity.getDate();
   }
 }
