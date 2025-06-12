@@ -45,6 +45,7 @@ export class Schedule {
     type: serviceType,
     service: Product[],
     value: number,
+    concluded: boolean,
   ) {
     this.barber = barber;
     this.customer = customer;
@@ -52,6 +53,7 @@ export class Schedule {
     this.type = type;
     this.service = service;
     this.value = value;
+    this.concluded = concluded;
   }
 
   public setBarber(barber: User): void {
