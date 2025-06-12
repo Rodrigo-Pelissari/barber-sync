@@ -22,6 +22,10 @@ export class UserRepository {
     return await this.repository.findOneBy({ id });
   }
 
+  public async findByName(name: string): Promise<User | null> {
+    return await this.repository.findOneBy({ name });
+  }
+
   public async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }

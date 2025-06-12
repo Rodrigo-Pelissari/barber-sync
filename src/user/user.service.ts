@@ -40,7 +40,22 @@ export class UserService {
 
   public async findById(id: string): Promise<UserDto | null> {
     const user = await this.repository.findById(id);
-    if (!user) return null;
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
+
+    return new UserDto(
+      user.id,
+      user.name,
+      user.cpf,
+      user.email,
+      user.phone,
+      user.role,
+    );
+  }
+
+  public async findByName(name: string): Promise<UserDto | null> {
+    const user = await this.repository.findByName(name);
+    if (!user) throw new NotFoundException(`User with name ${name} not found`);
+
     return new UserDto(
       user.id,
       user.name,
@@ -68,5 +83,21 @@ export class UserService {
 
   public async delete(id: string): Promise<void> {
     await this.repository.delete(id);
+  }
+
+  public async findEntityById(id: string): Promise<User | null> {
+    const user = await this.repository.findById(id);
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    return user;
+  }
+
+  public async findEntityByName(name: string): Promise<User | null> {
+    const user = await this.repository.findByName(name);
+    if (!user) {
+      throw new NotFoundException(`User with name ${name} not found`);
+    }
+    return user;
   }
 }

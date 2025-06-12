@@ -1,7 +1,7 @@
 import { Product } from 'src/product/entities/product.entity';
 import { User } from 'src/user/entities/user.entity';
 import { serviceType } from '../enums/serviceType.enum';
-import { IsObject, ValidateNested } from 'class-validator';
+import { IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Schedule } from '../entities/schedule.entity';
 
@@ -28,10 +28,11 @@ export class CreateScheduleDto {
   @Type(() => Product)
   service: Product[];
 
-  @IsObject()
-  @ValidateNested()
-  @Type(() => Number)
+  @IsNumber()
   value: number;
+
+  @IsString({ each: true })
+  productsNames: string[];
 
   public toEntity(): Schedule {
     return new Schedule(
