@@ -7,6 +7,8 @@ import { ScheduleDto } from './dto/schedule.dto';
 import { User } from 'src/user/entities/user.entity';
 import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
+import { ComissionService } from 'src/comission/comission.service';
+import { CreateComissionDto } from 'src/comission/dto/create-comission.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -14,6 +16,7 @@ export class ScheduleService {
     private readonly scheduleRepository: ScheduleRepository,
     private readonly productRepository: ProductRepository,
     private readonly userRepository: UserRepository,
+    private readonly comissionService: ComissionService,
   ) {}
 
   public async create(
@@ -130,6 +133,14 @@ export class ScheduleService {
     if (!schedule) {
       throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
     }
+
+    const comission = new CreateComissionDto(
+      schedule.getBarber(),
+      schedule.getValue(),
+      schedule.getDate(),
+    );
+
+    await this.comissionService.create(comission);
 
     schedule.setConcluded(true);
     await this.scheduleRepository.save(schedule);
