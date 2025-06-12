@@ -61,10 +61,17 @@ export class ComissionService {
     if (!comission)
       throw new NotFoundException(`Comission with id ${id} not found`);
 
-    updateComissionDto.update(comission);
-    await this.comissionRepository.save(comission);
+    const updatedComission = await this.comissionRepository.merge(
+      comission,
+      updateComissionDto,
+    );
+    await this.comissionRepository.save(updatedComission);
 
-    return new ComissionDto(comission.barber, comission.value, comission.date);
+    return new ComissionDto(
+      updatedComission.barber,
+      updatedComission.value,
+      updatedComission.date,
+    );
   }
 
   public async delete(id: string): Promise<void> {

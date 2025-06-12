@@ -31,6 +31,13 @@ export class ComissionRepository {
     await this.repository.delete(id);
   }
 
+  public async merge(
+    target: Comission,
+    source: Partial<Comission>,
+  ): Promise<Comission> {
+    return this.repository.merge(target, source);
+  }
+
   public async findByBarberId(barberId: string): Promise<Comission[]> {
     return this.repository
       .createQueryBuilder('comission')
