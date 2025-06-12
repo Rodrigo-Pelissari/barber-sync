@@ -1,23 +1,23 @@
-import { Product } from 'src/product/entities/product.entity';
-import { User } from 'src/user/entities/user.entity';
 import { serviceType } from '../enums/serviceType.enum';
+import { UserDto } from 'src/user/dto/user.dto';
+import { ProductDto } from 'src/product/dto/product.dto';
 
 export class ScheduleDto {
   public id: string;
-  public barber: User;
-  public customer: User;
+  public barber: UserDto;
+  public customer: UserDto;
   public date: Date;
   public type: serviceType;
-  public service: Product[];
+  public service: ProductDto[];
   public value: number;
 
   constructor(
     id: string,
-    barber: User,
-    customer: User,
+    barber: UserDto,
+    customer: UserDto,
     date: Date,
     type: serviceType,
-    service: Product[],
+    service: ProductDto[],
     value: number,
   ) {
     this.id = id;
