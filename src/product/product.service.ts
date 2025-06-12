@@ -21,6 +21,10 @@ export class ProductService {
     return await this.repository.findById(id);
   }
 
+  public async findByName(name: string): Promise<Product | null> {
+    return await this.repository.findByName(name);
+  }
+
   public async update(
     id: string,
     updateProductDto: UpdateProductDto,
