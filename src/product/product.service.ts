@@ -38,10 +38,13 @@ export class ProductService {
     if (!product)
       throw new NotFoundException(`Product with id ${id} not found`);
 
-    updateProductDto.update(product);
+    const updatedProduct = await this.repository.merge(
+      product,
+      updateProductDto,
+    );
 
-    await this.repository.save(product);
-    return new ProductDto(product);
+    await this.repository.save(updatedProduct);
+    return new ProductDto(updatedProduct);
   }
 
   public async delete(id: string) {

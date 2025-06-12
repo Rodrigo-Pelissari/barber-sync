@@ -29,4 +29,11 @@ export class ProductRepository {
   async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }
+
+  public async merge(
+    target: Product,
+    source: Partial<Product>,
+  ): Promise<Product> {
+    return this.repository.merge(target, source);
+  }
 }
