@@ -5,25 +5,25 @@ import { Schedule } from 'src/schedule/entities/schedule.entity';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  private id: string;
+  id: string;
 
   @Column()
-  private name: string;
+  name: string;
 
   @Column({ type: 'varchar', length: 11, unique: true })
-  private cpf: string;
+  cpf: string;
 
   @Column({ type: 'varchar', unique: true })
-  private email: string;
+  email: string;
 
   @Column({ type: 'varchar', unique: true })
-  private phone: string;
+  phone: string;
 
   @Column()
-  private password: string;
+  password: string;
 
   @Column({ type: 'enum', enum: Role })
-  private role: Role;
+  role: Role;
 
   @OneToMany(() => Schedule, (schedule) => schedule.barber)
   barberSchedules: Schedule[];
