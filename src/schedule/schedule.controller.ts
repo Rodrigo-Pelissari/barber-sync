@@ -23,8 +23,8 @@ export class ScheduleController {
   @Post()
   public async create(
     @Body() createScheduleDto: CreateScheduleDto,
-    userId: string,
-    name: string,
+    @Body('userId') userId: string,
+    @Body('name') name: string,
   ) {
     const user = await this.userService.findEntityById(userId);
     const dto = plainToInstance(CreateScheduleDto, createScheduleDto);
