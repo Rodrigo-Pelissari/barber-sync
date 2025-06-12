@@ -16,18 +16,25 @@ export class ScheduleService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  public async createScheduleAsCustomer(
+  public async create(
     createScheduleDto: CreateScheduleDto,
-    customer: User,
-    barberName: string,
+    user: User,
+    otherUserName: string,
   ): Promise<ScheduleDto> {
     const entity = createScheduleDto.toEntity();
 
-    const barber = await this.userRepository.findByName(barberName);
-    if (!barber) {
-      throw new NotFoundException(`Barber with name ${barberName} not found`);
+    const otherUser = await this.userRepository.findByName(otherUserName);
+    if (!otherUser) {
+      throw new NotFoundException(`User with name ${otherUserName} not found`);
     }
-    entity.setBarber(barber);
+
+    if (user.getRole() === 'customer') {
+      entity.setCustomer(user);
+      entity.setBarber(otherUser);
+    } else {
+      entity.setCustomer(otherUser);
+      entity.setBarber(user);
+    }
 
     for (const productName of createScheduleDto.productsNames) {
       const product = await this.productRepository.findByName(productName);
@@ -39,51 +46,8 @@ export class ScheduleService {
       entity.addProduct(product);
     }
 
-    entity.setCustomer(customer);
-
     await this.setScheduleProductsAndValue(entity);
-
-    const savedEntity = await this.scheduleRepository.save(entity);
-
-    return new ScheduleDto(
-      savedEntity.id,
-      savedEntity.barber,
-      savedEntity.customer,
-      savedEntity.date,
-      savedEntity.type,
-      savedEntity.service,
-      savedEntity.value,
-    );
-  }
-
-  public async createScheduleAsBarber(
-    createScheduleDto: CreateScheduleDto,
-    barber: User,
-    customerName: string,
-  ): Promise<ScheduleDto> {
-    const entity = createScheduleDto.toEntity();
-
-    const customer = await this.userRepository.findByName(customerName);
-    if (!customer) {
-      throw new NotFoundException(
-        `Customer with name ${customerName} not found`,
-      );
-    }
-    entity.setCustomer(customer);
-
-    for (const productName of createScheduleDto.productsNames) {
-      const product = await this.productRepository.findByName(productName);
-      if (!product) {
-        throw new NotFoundException(
-          `Product with name ${productName} not found`,
-        );
-      }
-      entity.addProduct(product);
-    }
-
-    entity.setBarber(barber);
-
-    await this.setScheduleProductsAndValue(entity);
+    entity.setConcluded(false);
 
     const savedEntity = await this.scheduleRepository.save(entity);
 
@@ -158,6 +122,17 @@ export class ScheduleService {
 
   public async delete(id: string): Promise<void> {
     await this.scheduleRepository.delete(id);
+  }
+
+  public async concludeSchedule(scheduleId: string): Promise<void> {
+    const schedule = await this.scheduleRepository.findById(scheduleId);
+
+    if (!schedule) {
+      throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
+    }
+
+    schedule.setConcluded(true);
+    await this.scheduleRepository.save(schedule);
   }
 
   public async setScheduleProductsAndValue(schedule: Schedule): Promise<void> {

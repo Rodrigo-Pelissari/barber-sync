@@ -29,11 +29,7 @@ export class ScheduleController {
     const user = await this.userService.findEntityById(userId);
     const dto = plainToInstance(CreateScheduleDto, createScheduleDto);
 
-    if (user.role === 'customer') {
-      return await this.service.createScheduleAsCustomer(dto, user, name);
-    } else {
-      return await this.service.createScheduleAsBarber(dto, user, name);
-    }
+    return await this.service.create(dto, user, name);
   }
 
   @Get()
