@@ -42,10 +42,12 @@ export class ScheduleService {
       products.push(product);
     }
 
+    const dateObj = new Date(createScheduleDto.date);
+
     const entity = new Schedule(
       user.role === 'customer' ? otherUser : user,
       user.role !== 'customer' ? user : otherUser,
-      createScheduleDto.date,
+      dateObj,
       createScheduleDto.type,
       products,
       0,
@@ -110,9 +112,18 @@ export class ScheduleService {
     if (!schedule)
       throw new NotFoundException(`Schedule with id ${id} not found`);
 
-    updateScheduleDto.update(schedule);
+    const newPartialSchedule: Partial<Schedule> = {
+      ...updateScheduleDto,
+      ...(updateScheduleDto.date && { date: new Date(updateScheduleDto.date) }),
+    };
 
-    const updatedSchedule = await this.scheduleRepository.save(schedule);
+    const updatedSchedule = await this.scheduleRepository.merge(
+      schedule,
+      newPartialSchedule,
+    );
+
+    await this.setScheduleProductsAndValue(updatedSchedule);
+    await this.scheduleRepository.save(updatedSchedule);
 
     return new ScheduleDto(
       updatedSchedule.id,

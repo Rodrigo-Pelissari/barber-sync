@@ -26,6 +26,13 @@ export class ScheduleRepository {
     await this.repository.delete(id);
   }
 
+  public async merge(
+    target: Schedule,
+    source: Partial<Schedule>,
+  ): Promise<Schedule> {
+    return this.repository.merge(target, source);
+  }
+
   public async findByUser(userId: string): Promise<Schedule[]> {
     return await this.repository.find({
       where: [

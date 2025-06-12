@@ -1,10 +1,12 @@
 import { serviceType } from '../enums/serviceType.enum';
-import { IsString } from 'class-validator';
+import { IsDateString, IsEnum, IsString } from 'class-validator';
 
 export class CreateScheduleDto {
+  @IsEnum(serviceType)
   type: serviceType;
 
-  date: Date;
+  @IsDateString()
+  date: string;
 
   @IsString({ each: true })
   productsNames: string[];
