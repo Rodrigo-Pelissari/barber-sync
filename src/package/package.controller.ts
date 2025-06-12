@@ -12,7 +12,7 @@ import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { plainToInstance } from 'class-transformer';
 
-@Controller('package')
+@Controller('packages')
 export class PackageController {
   constructor(private readonly service: PackageService) {}
 
