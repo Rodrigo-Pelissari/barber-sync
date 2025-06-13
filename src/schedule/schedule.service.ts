@@ -58,32 +58,13 @@ export class ScheduleService {
 
     const savedEntity = await this.scheduleRepository.save(entity);
 
-    return new ScheduleDto(
-      savedEntity.id,
-      savedEntity.barber,
-      savedEntity.customer,
-      savedEntity.date,
-      savedEntity.type,
-      savedEntity.service,
-      savedEntity.value,
-    );
+    return new ScheduleDto(savedEntity);
   }
 
   public async findAll(): Promise<ScheduleDto[]> {
     const schedules = await this.scheduleRepository.findAll();
 
-    return schedules.map(
-      (schedule) =>
-        new ScheduleDto(
-          schedule.id,
-          schedule.barber,
-          schedule.customer,
-          schedule.date,
-          schedule.type,
-          schedule.service,
-          schedule.value,
-        ),
-    );
+    return schedules.map((schedule) => new ScheduleDto(schedule));
   }
 
   public async findById(id: string): Promise<ScheduleDto | null> {
@@ -92,15 +73,7 @@ export class ScheduleService {
     if (!schedule)
       throw new NotFoundException(`Schedule with id ${id} not found`);
 
-    return new ScheduleDto(
-      schedule.id,
-      schedule.barber,
-      schedule.customer,
-      schedule.date,
-      schedule.type,
-      schedule.service,
-      schedule.value,
-    );
+    return new ScheduleDto(schedule);
   }
 
   public async update(
@@ -125,15 +98,7 @@ export class ScheduleService {
     await this.setScheduleProductsAndValue(updatedSchedule);
     await this.scheduleRepository.save(updatedSchedule);
 
-    return new ScheduleDto(
-      updatedSchedule.id,
-      updatedSchedule.barber,
-      updatedSchedule.customer,
-      updatedSchedule.date,
-      updatedSchedule.type,
-      updatedSchedule.service,
-      updatedSchedule.value,
-    );
+    return new ScheduleDto(updatedSchedule);
   }
 
   public async delete(id: string): Promise<void> {
