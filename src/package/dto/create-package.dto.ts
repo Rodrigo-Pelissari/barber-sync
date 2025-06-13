@@ -22,6 +22,7 @@ export class CreatePackageDto {
     return new Package(
       this.customer,
       this.grossValue,
+      0,
       this.servicesQuantityMap,
       [],
       this.discount,
