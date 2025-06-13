@@ -3,10 +3,15 @@ import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { PackageDto } from './dto/package.dto';
 import { PackageRepository } from './package.repository';
+import { Package } from './entities/package.entity';
+import { ProductRepository } from 'src/product/product.repository';
 
 @Injectable()
 export class PackageService {
-  constructor(private readonly repository: PackageRepository) {}
+  constructor(
+    private readonly repository: PackageRepository,
+    private readonly productRepository: ProductRepository,
+  ) {}
 
   public async create(createPackageDto: CreatePackageDto): Promise<PackageDto> {
     const entity = createPackageDto.toEntity();
@@ -49,5 +54,26 @@ export class PackageService {
 
   public async delete(id: string): Promise<void> {
     await this.repository.delete(id);
+  }
+
+  private async calculateAvailableServicesPerProduct(
+    entity: Package,
+  ): Promise<void> {
+    const products = await this.productRepository.findAll();
+
+    if (!products || products.length === 0) {
+      throw new NotFoundException(
+        'No products found to calculate services quantity',
+      );
+    }
+
+    const availableValue = entity.grossValue - entity.usedValue;
+
+    entity.servicesQuantityMap = {};
+
+    for (const product of products) {
+      const serviceQuantity = Math.floor(availableValue / product.price);
+      entity.servicesQuantityMap[product.name] = serviceQuantity;
+    }
   }
 }

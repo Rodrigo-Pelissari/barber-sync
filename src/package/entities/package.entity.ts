@@ -24,6 +24,9 @@ export class Package {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   netValue: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  usedValue: number;
+
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   discount?: number;
 
@@ -37,12 +40,14 @@ export class Package {
   constructor(
     customer: User,
     grossValue: number,
+    usedValue: number,
     servicesQuantityMap: Record<string, number>,
     usedServices: Schedule[],
     discount?: number,
   ) {
     this.customer = customer;
     this.grossValue = grossValue;
+    this.usedValue = usedValue;
     this.servicesQuantityMap = servicesQuantityMap;
     this.usedServices = usedServices;
     this.discount = discount;
@@ -101,5 +106,14 @@ export class Package {
 
   public getUsedServices(): Schedule[] {
     return this.usedServices;
+  }
+
+  public addUsedValue(value: number): void {
+    this.usedValue += value;
+  }
+
+  public addUsedService(service: Schedule): void {
+    this.usedServices.push(service);
+    this.addUsedValue(service.getValue());
   }
 }

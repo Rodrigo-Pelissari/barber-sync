@@ -22,6 +22,13 @@ export class PackageRepository {
     return await this.repository.findOneBy({ id });
   }
 
+  public async findByCustomerId(customerId: string): Promise<Package | null> {
+    return await this.repository.findOne({
+      where: { customer: { id: customerId } },
+      relations: ['customer', 'usedServices'],
+    });
+  }
+
   async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }
