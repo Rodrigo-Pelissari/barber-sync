@@ -27,8 +27,8 @@ export class Package {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   discount?: number;
 
-  @Column({ type: 'int' })
-  servicesQuantity: number;
+  @Column('jsonb', { nullable: true })
+  servicesQuantityMap: Record<string, number>;
 
   @ManyToOne(() => Schedule, { eager: true, cascade: true })
   @JoinColumn()
@@ -37,13 +37,13 @@ export class Package {
   constructor(
     customer: User,
     grossValue: number,
-    servicesQuantity: number,
+    servicesQuantityMap: Record<string, number>,
     usedServices: Schedule[],
     discount?: number,
   ) {
     this.customer = customer;
     this.grossValue = grossValue;
-    this.servicesQuantity = servicesQuantity;
+    this.servicesQuantityMap = servicesQuantityMap;
     this.usedServices = usedServices;
     this.discount = discount;
   }
@@ -60,8 +60,9 @@ export class Package {
     this.netValue = this.grossValue - this.discount || 0;
   }
 
-  public setServicesQuantity(servicesQuantity: number): void {
-    this.servicesQuantity = servicesQuantity;
+  public setDiscount(discount: number): void {
+    this.discount = discount;
+    this.setNetValue();
   }
 
   public setUsedServices(usedServices: Schedule[]): void {
@@ -70,6 +71,10 @@ export class Package {
 
   public getId(): string {
     return this.id;
+  }
+
+  public getDiscount(): number | undefined {
+    return this.discount;
   }
 
   public getCustomer(): User {
@@ -84,8 +89,14 @@ export class Package {
     return this.netValue;
   }
 
-  public getServicesQuantity(): number {
-    return this.servicesQuantity;
+  public setServicesQuantityMap(
+    servicesQuantityMap: Record<string, number>,
+  ): void {
+    this.servicesQuantityMap = servicesQuantityMap;
+  }
+
+  public getServicesQuantityMap(): Record<string, number> {
+    return this.servicesQuantityMap;
   }
 
   public getUsedServices(): Schedule[] {

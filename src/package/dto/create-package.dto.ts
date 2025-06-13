@@ -1,12 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsInt,
-  IsNumber,
-  IsObject,
-  ValidateNested,
-} from 'class-validator';
-import { Schedule } from 'src/schedule/entities/schedule.entity';
+import { IsNumber, IsObject, ValidateNested } from 'class-validator';
 import { User } from 'src/user/entities/user.entity';
 import { Package } from '../entities/package.entity';
 
@@ -17,22 +10,21 @@ export class CreatePackageDto {
   customer: User;
 
   @IsNumber()
-  value: number;
+  grossValue: number;
 
-  @IsInt()
-  servicesQuantity: number;
+  @IsNumber()
+  discount?: number;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Schedule)
-  usedServices: Schedule[];
+  @IsObject()
+  servicesQuantityMap: Record<string, number>;
 
   public toEntity(): Package {
     return new Package(
       this.customer,
-      this.value,
-      this.servicesQuantity,
-      this.usedServices,
+      this.grossValue,
+      this.servicesQuantityMap,
+      [],
+      this.discount,
     );
   }
 }
