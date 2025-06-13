@@ -1,5 +1,6 @@
 import { IsString, IsNumber } from 'class-validator';
 import { Product } from '../entities/product.entity';
+import { ProductsType } from '../enums/productsType.enum';
 
 export class CreateProductDto {
   @IsString()
@@ -8,7 +9,9 @@ export class CreateProductDto {
   @IsNumber()
   price: number;
 
+  type: ProductsType;
+
   public toEntity(): Product {
-    return new Product(this.name, this.price);
+    return new Product(this.name, this.price, this.type);
   }
 }
