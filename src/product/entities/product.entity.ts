@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ProductsType } from '../enums/productsType.enum';
 
 @Entity('products')
 export class Product {
@@ -11,9 +12,13 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  constructor(name: string, price: number) {
+  @Column({ type: 'enum', enum: ProductsType, default: ProductsType.SERVICE })
+  type: ProductsType;
+
+  constructor(name: string, price: number, type: ProductsType) {
     this.name = name;
     this.price = price;
+    this.type = type;
   }
 
   public setName(name: string): void {
