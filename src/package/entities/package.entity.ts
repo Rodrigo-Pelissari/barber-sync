@@ -19,7 +19,13 @@ export class Package {
   customer: User;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  value: number;
+  grossValue: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  netValue: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  discount?: number;
 
   @Column({ type: 'int' })
   servicesQuantity: number;
@@ -30,22 +36,28 @@ export class Package {
 
   constructor(
     customer: User,
-    value: number,
+    grossValue: number,
     servicesQuantity: number,
     usedServices: Schedule[],
+    discount?: number,
   ) {
     this.customer = customer;
-    this.value = value;
+    this.grossValue = grossValue;
     this.servicesQuantity = servicesQuantity;
     this.usedServices = usedServices;
+    this.discount = discount;
   }
 
   public setCustomer(customer: User): void {
     this.customer = customer;
   }
 
-  public setValue(value: number): void {
-    this.value = value;
+  public setGrossValue(grossValue: number): void {
+    this.grossValue = grossValue;
+  }
+
+  public setNetValue(): void {
+    this.netValue = this.grossValue - this.discount || 0;
   }
 
   public setServicesQuantity(servicesQuantity: number): void {
@@ -64,8 +76,12 @@ export class Package {
     return this.customer;
   }
 
-  public getValue(): number {
-    return this.value;
+  public getGrossValue(): number {
+    return this.grossValue;
+  }
+
+  public getNetValue(): number {
+    return this.netValue;
   }
 
   public getServicesQuantity(): number {
