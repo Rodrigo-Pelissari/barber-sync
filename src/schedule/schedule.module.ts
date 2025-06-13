@@ -7,6 +7,7 @@ import { ScheduleRepository } from './schedule.repository';
 import { ProductModule } from 'src/product/product.module';
 import { UserModule } from 'src/user/user.module';
 import { ComissionModule } from 'src/comission/comission.module';
+import { PackageModule } from 'src/package/package.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ComissionModule } from 'src/comission/comission.module';
     ProductModule,
     UserModule,
     ComissionModule,
+    PackageModule,
   ],
   controllers: [ScheduleController],
   providers: [ScheduleService, ScheduleRepository],
