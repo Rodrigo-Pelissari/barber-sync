@@ -5,15 +5,19 @@ import { Package } from '../entities/package.entity';
 export class PackageDto {
   id: string;
   customer: UserDto;
-  value: number;
-  servicesQuantity: number;
+  grossValue: number;
+  netValue: number;
+  discount?: number;
+  servicesQuantityMap: Record<string, number>;
   usedServices: ScheduleDto[];
 
   constructor(entity: Package) {
     this.id = entity.getId();
     this.customer = new UserDto(entity.getCustomer());
-    this.value = entity.getValue();
-    this.servicesQuantity = entity.getServicesQuantity();
+    this.grossValue = entity.getGrossValue();
+    this.netValue = entity.getNetValue();
+    this.discount = entity.getDiscount();
+    this.servicesQuantityMap = entity.getServicesQuantityMap();
     this.usedServices = entity
       .getUsedServices()
       .map((schedule) => new ScheduleDto(schedule));
