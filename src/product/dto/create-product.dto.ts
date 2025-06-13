@@ -9,6 +9,7 @@ export class CreateProductDto {
   @IsNumber()
   price: number;
 
+  @IsString()
   type: ProductsType;
 
   public toEntity(): Product {
