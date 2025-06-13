@@ -10,6 +10,7 @@ import { UserRepository } from 'src/user/user.repository';
 import { ComissionService } from 'src/comission/comission.service';
 import { CreateComissionDto } from 'src/comission/dto/create-comission.dto';
 import { Product } from 'src/product/entities/product.entity';
+import { PackageRepository } from 'src/package/package.repository';
 
 @Injectable()
 export class ScheduleService {
@@ -18,6 +19,7 @@ export class ScheduleService {
     private readonly productRepository: ProductRepository,
     private readonly userRepository: UserRepository,
     private readonly comissionService: ComissionService,
+    private readonly packageRepository: PackageRepository,
   ) {}
 
   public async create(
@@ -105,6 +107,17 @@ export class ScheduleService {
     await this.scheduleRepository.delete(id);
   }
 
+  public async setScheduleProductsAndValue(schedule: Schedule): Promise<void> {
+    let totalServiceValue = 0;
+
+    for (const product of schedule.getService()) {
+      schedule.addProduct(product);
+      totalServiceValue += product.getPrice();
+    }
+
+    schedule.setValue(totalServiceValue);
+  }
+
   public async concludeSchedule(scheduleId: string): Promise<void> {
     const schedule = await this.scheduleRepository.findById(scheduleId);
 
@@ -120,18 +133,21 @@ export class ScheduleService {
 
     await this.comissionService.create(comission);
 
-    schedule.setConcluded(true);
-    await this.scheduleRepository.save(schedule);
-  }
+    if (schedule.getType() == 'package') {
+      const customerPackage = await this.packageRepository.findByCustomerId(
+        schedule.getCustomer().getId(),
+      );
 
-  public async setScheduleProductsAndValue(schedule: Schedule): Promise<void> {
-    let totalServiceValue = 0;
+      if (!customerPackage) {
+        throw new NotFoundException(
+          `No packages found for customer with id ${schedule.getCustomer().getId()}`,
+        );
+      }
 
-    for (const product of schedule.getService()) {
-      schedule.addProduct(product);
-      totalServiceValue += product.getPrice();
+      customerPackage.addUsedService(schedule);
     }
 
-    schedule.setValue(totalServiceValue);
+    schedule.setConcluded(true);
+    await this.scheduleRepository.save(schedule);
   }
 }
