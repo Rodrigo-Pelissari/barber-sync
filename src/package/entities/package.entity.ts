@@ -70,12 +70,16 @@ export class Package {
   @JoinColumn()
   usedServices: Schedule[];
 
+  @Column()
+  isActive: boolean;
+
   constructor(
     customer: User,
     grossValue: number,
     usedValue: number,
     servicesQuantityMap: Record<string, number>,
     usedServices: Schedule[],
+    isActive: boolean,
     discount?: number,
   ) {
     this.customer = customer;
@@ -83,6 +87,7 @@ export class Package {
     this.usedValue = usedValue;
     this.servicesQuantityMap = servicesQuantityMap;
     this.usedServices = usedServices;
+    this.isActive = isActive;
     this.discount = discount;
   }
 
@@ -105,6 +110,10 @@ export class Package {
 
   public setUsedServices(usedServices: Schedule[]): void {
     this.usedServices = usedServices;
+  }
+
+  public setUsedValue(usedValue: number): void {
+    this.usedValue = usedValue;
   }
 
   public getId(): string {
@@ -139,6 +148,10 @@ export class Package {
 
   public getUsedServices(): Schedule[] {
     return this.usedServices;
+  }
+
+  public getUsedValue(): number {
+    return this.usedValue;
   }
 
   public addUsedValue(value: number): void {
