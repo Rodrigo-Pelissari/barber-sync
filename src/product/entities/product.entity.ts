@@ -9,7 +9,15 @@ export class Product {
   @Column({ unique: true })
   name: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string): number => parseFloat(value),
+    },
+  })
   price: number;
 
   @Column({ type: 'enum', enum: ProductsType, default: ProductsType.SERVICE })

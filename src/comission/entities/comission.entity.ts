@@ -9,7 +9,16 @@ export class Comission {
   @ManyToOne(() => User, { eager: true, cascade: true })
   barber: User;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string): number => parseFloat(value),
+    },
+  })
   value: number;
 
   @Column({ type: 'timestamp' })
