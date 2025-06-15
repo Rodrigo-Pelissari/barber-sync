@@ -5,16 +5,48 @@ import { PackageDto } from './dto/package.dto';
 import { PackageRepository } from './package.repository';
 import { Package } from './entities/package.entity';
 import { ProductRepository } from 'src/product/product.repository';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class PackageService {
   constructor(
     private readonly repository: PackageRepository,
     private readonly productRepository: ProductRepository,
+    private readonly userService: UserService,
   ) {}
 
   public async create(createPackageDto: CreatePackageDto): Promise<PackageDto> {
-    const entity = createPackageDto.toEntity();
+    const customer = await this.userService.findEntityByName(
+      createPackageDto.customer,
+    );
+
+    const customerActivePackage =
+      await this.repository.findActivePackageByCustomer(customer.id);
+
+    let packageNetValue = 0;
+
+    if (customerActivePackage) {
+      packageNetValue =
+        customerActivePackage.getGrossValue() -
+        customerActivePackage.getUsedValue();
+
+      customerActivePackage.isActive = false;
+
+      await this.repository.save(customerActivePackage);
+    }
+
+    const entity = new Package(
+      customer,
+      createPackageDto.grossValue + packageNetValue,
+      0,
+      createPackageDto.servicesQuantityMap,
+      [],
+      true,
+      createPackageDto.discount ? createPackageDto.discount : 0,
+    );
+
+    await this.calculateAvailableServicesPerProduct(entity);
+
     const savedEntity = await this.repository.save(entity);
 
     return new PackageDto(savedEntity);
@@ -42,9 +74,24 @@ export class PackageService {
 
     if (!entity) throw new NotFoundException(`Package with id ${id} not found`);
 
+    const user = await this.userService.findEntityByName(
+      updatePackageDto.customer,
+    );
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with name ${updatePackageDto.customer} not found`,
+      );
+    }
+
+    const newPartialPackage: Partial<Package> = {
+      ...updatePackageDto,
+      ...(updatePackageDto.customer && { customer: user }),
+    };
+
     const updatedPackage = await this.repository.merge(
       entity,
-      updatePackageDto,
+      newPartialPackage,
     );
 
     const updatedEntity = await this.repository.save(updatedPackage);
