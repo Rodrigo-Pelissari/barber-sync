@@ -1,13 +1,8 @@
-import { Type } from 'class-transformer';
-import { IsNumber, IsObject, ValidateNested } from 'class-validator';
-import { User } from 'src/user/entities/user.entity';
-import { Package } from '../entities/package.entity';
+import { IsNumber, IsObject, IsString } from 'class-validator';
 
 export class CreatePackageDto {
-  @IsObject()
-  @ValidateNested()
-  @Type(() => User)
-  customer: User;
+  @IsString()
+  customer: string;
 
   @IsNumber()
   grossValue: number;
@@ -17,15 +12,4 @@ export class CreatePackageDto {
 
   @IsObject()
   servicesQuantityMap: Record<string, number>;
-
-  public toEntity(): Package {
-    return new Package(
-      this.customer,
-      this.grossValue,
-      0,
-      this.servicesQuantityMap,
-      [],
-      this.discount,
-    );
-  }
 }
