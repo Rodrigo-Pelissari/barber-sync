@@ -54,7 +54,7 @@ export class UserService {
     await this.repository.delete(id);
   }
 
-  public async findEntityById(id: string): Promise<User | null> {
+  public async findEntityById(id: string): Promise<User> {
     const user = await this.repository.findById(id);
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -62,7 +62,7 @@ export class UserService {
     return user;
   }
 
-  public async findEntityByName(name: string): Promise<User | null> {
+  public async findEntityByName(name: string): Promise<User> {
     const user = await this.repository.findByName(name);
     if (!user) {
       throw new NotFoundException(`User with name ${name} not found`);
