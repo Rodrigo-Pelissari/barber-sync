@@ -39,4 +39,13 @@ export class PackageRepository {
   ): Promise<Package> {
     return this.repository.merge(target, source);
   }
+
+  public async findActivePackageByCustomer(
+    customerId: string,
+  ): Promise<Package | null> {
+    return await this.repository.findOne({
+      where: { customer: { id: customerId }, isActive: true },
+      relations: ['customer', 'usedServices'],
+    });
+  }
 }
