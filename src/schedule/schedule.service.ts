@@ -50,8 +50,8 @@ export class ScheduleService {
     const initialValue: number = 0;
 
     const entity = new Schedule(
-      user.role === Role.CUSTOMER ? otherUser : user,
-      user.role === Role.CUSTOMER ? otherUser : user,
+      user.role === Role.BARBER ? user : otherUser,
+      otherUser.role === Role.CUSTOMER ? otherUser : user,
       dateObj,
       createScheduleDto.type,
       products,
