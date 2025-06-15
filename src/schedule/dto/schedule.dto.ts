@@ -11,6 +11,7 @@ export class ScheduleDto {
   public type: serviceType;
   public service: ProductDto[];
   public value: number;
+  public concluded: boolean;
 
   constructor(entity: Schedule) {
     this.id = entity.getId();
@@ -22,5 +23,6 @@ export class ScheduleDto {
       .getService()
       .map((product) => new ProductDto(product));
     this.value = entity.getValue();
+    this.concluded = entity.getConcluded();
   }
 }

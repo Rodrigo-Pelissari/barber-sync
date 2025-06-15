@@ -11,6 +11,7 @@ import { ComissionService } from 'src/comission/comission.service';
 import { CreateComissionDto } from 'src/comission/dto/create-comission.dto';
 import { Product } from 'src/product/entities/product.entity';
 import { PackageRepository } from 'src/package/package.repository';
+import { Role } from 'src/user/enums/role.enum';
 
 @Injectable()
 export class ScheduleService {
@@ -46,17 +47,19 @@ export class ScheduleService {
 
     const dateObj = new Date(createScheduleDto.date);
 
+    const initialValue: number = 0;
+
     const entity = new Schedule(
-      user.role === 'customer' ? otherUser : user,
-      user.role !== 'customer' ? user : otherUser,
+      user.role === Role.CUSTOMER ? otherUser : user,
+      user.role === Role.CUSTOMER ? otherUser : user,
       dateObj,
       createScheduleDto.type,
       products,
-      0,
+      initialValue,
       false,
     );
 
-    await this.setScheduleProductsAndValue(entity);
+    this.setScheduleValue(entity);
 
     const savedEntity = await this.scheduleRepository.save(entity);
 
@@ -97,7 +100,7 @@ export class ScheduleService {
       newPartialSchedule,
     );
 
-    await this.setScheduleProductsAndValue(updatedSchedule);
+    await this.setScheduleValue(updatedSchedule);
     await this.scheduleRepository.save(updatedSchedule);
 
     return new ScheduleDto(updatedSchedule);
@@ -107,15 +110,10 @@ export class ScheduleService {
     await this.scheduleRepository.delete(id);
   }
 
-  public async setScheduleProductsAndValue(schedule: Schedule): Promise<void> {
-    let totalServiceValue = 0;
-
+  public setScheduleValue(schedule: Schedule): void {
     for (const product of schedule.getService()) {
-      schedule.addProduct(product);
-      totalServiceValue += product.getPrice();
+      schedule.addValue(product.getPrice());
     }
-
-    schedule.setValue(totalServiceValue);
   }
 
   public async concludeSchedule(scheduleId: string): Promise<void> {

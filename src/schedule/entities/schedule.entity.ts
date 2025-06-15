@@ -3,6 +3,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -28,11 +30,29 @@ export class Schedule {
   @Column({ type: 'enum', enum: serviceType })
   type: serviceType;
 
-  @ManyToOne(() => Product, { eager: true, cascade: true })
-  @JoinColumn()
+  @ManyToMany(() => Product, { eager: true, cascade: true })
+  @JoinTable({
+    name: 'schedule_products',
+    joinColumn: {
+      name: 'schedule_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+  })
   service: Product[];
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string): number => parseFloat(value),
+    },
+  })
   value: number;
 
   @Column()
@@ -116,10 +136,6 @@ export class Schedule {
     this.service = products;
   }
 
-  public getProducts(): Product[] {
-    return this.service;
-  }
-
   public getConcluded(): boolean {
     return this.concluded;
   }
@@ -135,5 +151,13 @@ export class Schedule {
     if (this.service) {
       this.service = this.service.filter((product) => product.id !== productId);
     }
+  }
+
+  public addValue(value: number): void {
+    this.value += value;
+  }
+
+  public removeValue(value: number): void {
+    this.value -= value;
   }
 }

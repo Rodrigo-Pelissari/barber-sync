@@ -21,15 +21,18 @@ export class ScheduleController {
   ) {}
 
   @Post()
-  public async create(
-    @Body() createScheduleDto: CreateScheduleDto,
-    @Body('userId') userId: string,
-    @Body('name') name: string,
-  ) {
-    const user = await this.userService.findEntityById(userId);
+  public async create(@Body() createScheduleDto: CreateScheduleDto) {
+    const creater = await this.userService.findEntityByName(
+      createScheduleDto.userName,
+    );
+
     const dto = plainToInstance(CreateScheduleDto, createScheduleDto);
 
-    return await this.service.create(dto, user, name);
+    return await this.service.create(
+      dto,
+      creater,
+      createScheduleDto.otherUserName,
+    );
   }
 
   @Get()
