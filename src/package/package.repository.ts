@@ -10,26 +10,58 @@ export class PackageRepository {
     private readonly repository: Repository<Package>,
   ) {}
 
-  async save(entity: Package): Promise<Package> {
-    return await this.repository.save(entity);
+  public async save(packageEntity: Package): Promise<Package> {
+    return this.repository.save(packageEntity);
   }
 
-  async findAll(): Promise<Package[]> {
-    return await this.repository.find();
-  }
-
-  async findById(id: string): Promise<Package | null> {
-    return await this.repository.findOneBy({ id });
-  }
-
-  public async findByCustomerId(customerId: string): Promise<Package | null> {
-    return await this.repository.findOne({
-      where: { customer: { id: customerId } },
-      relations: ['customer', 'usedServices'],
+  public async findById(id: string): Promise<Package | null> {
+    return this.repository.findOne({
+      where: { id },
+      relations: {
+        customer: true,
+        packageProducts: {
+          product: true,
+        },
+      },
     });
   }
 
-  async delete(id: string): Promise<void> {
+  public async findByUserId(userId: string): Promise<Package | null> {
+    return this.repository.findOne({
+      where: { customer: { id: userId } },
+      relations: {
+        customer: true,
+        packageProducts: {
+          product: true,
+        },
+      },
+    });
+  }
+
+  public async findByUserName(userName: string): Promise<Package | null> {
+    return this.repository.findOne({
+      where: { customer: { name: userName } },
+      relations: {
+        customer: true,
+        packageProducts: {
+          product: true,
+        },
+      },
+    });
+  }
+
+  public async findAll(): Promise<Package[]> {
+    return this.repository.find({
+      relations: {
+        customer: true,
+        packageProducts: {
+          product: true,
+        },
+      },
+    });
+  }
+
+  public async deleteById(id: string): Promise<void> {
     await this.repository.delete(id);
   }
 
@@ -38,14 +70,5 @@ export class PackageRepository {
     source: Partial<Package>,
   ): Promise<Package> {
     return this.repository.merge(target, source);
-  }
-
-  public async findActivePackageByCustomer(
-    customerId: string,
-  ): Promise<Package | null> {
-    return await this.repository.findOne({
-      where: { customer: { id: customerId }, isActive: true },
-      relations: ['customer', 'usedServices'],
-    });
   }
 }
