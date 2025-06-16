@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
+import { ProductsType } from './enums/productsType.enum';
 
 @Injectable()
 export class ProductRepository {
@@ -16,6 +17,10 @@ export class ProductRepository {
 
   async findAll(): Promise<Product[]> {
     return await this.repository.find();
+  }
+
+  async findAllByType(type: ProductsType): Promise<Product[]> {
+    return await this.repository.find({ where: { type } });
   }
 
   async findById(id: string): Promise<Product | null> {
