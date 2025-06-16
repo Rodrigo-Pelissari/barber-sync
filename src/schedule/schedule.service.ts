@@ -132,7 +132,7 @@ export class ScheduleService {
     await this.comissionService.create(comission);
 
     if (schedule.getType() == 'package') {
-      const customerPackage = await this.packageRepository.findByCustomerId(
+      const customerPackage = await this.packageRepository.findByUserId(
         schedule.getCustomer().getId(),
       );
 
