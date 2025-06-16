@@ -5,9 +5,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { PackageProduct } from './package-product.entity';
 
 @Entity('packages')
 export class Package {
@@ -63,8 +65,11 @@ export class Package {
   })
   discount?: number;
 
-  @Column('jsonb', { nullable: true })
-  servicesQuantityMap: Record<string, number>;
+  @OneToMany(() => PackageProduct, (packageProduct) => packageProduct.package, {
+    eager: true,
+    cascade: true,
+  })
+  packageProducts: PackageProduct[];
 
   @ManyToOne(() => Schedule, { eager: true, cascade: true })
   @JoinColumn()
@@ -76,17 +81,11 @@ export class Package {
   constructor(
     customer: User,
     grossValue: number,
-    usedValue: number,
-    servicesQuantityMap: Record<string, number>,
-    usedServices: Schedule[],
     isActive: boolean,
     discount?: number,
   ) {
     this.customer = customer;
     this.grossValue = grossValue;
-    this.usedValue = usedValue;
-    this.servicesQuantityMap = servicesQuantityMap;
-    this.usedServices = usedServices;
     this.isActive = isActive;
     this.discount = discount;
   }
@@ -112,6 +111,10 @@ export class Package {
     this.usedServices = usedServices;
   }
 
+  public setPackageProducts(packageProducts: PackageProduct[]): void {
+    this.packageProducts = packageProducts;
+  }
+
   public setUsedValue(usedValue: number): void {
     this.usedValue = usedValue;
   }
@@ -124,6 +127,10 @@ export class Package {
     return this.discount;
   }
 
+  public getPackageProducts(): PackageProduct[] {
+    return this.packageProducts;
+  }
+
   public getCustomer(): User {
     return this.customer;
   }
@@ -134,16 +141,6 @@ export class Package {
 
   public getNetValue(): number {
     return this.netValue;
-  }
-
-  public setServicesQuantityMap(
-    servicesQuantityMap: Record<string, number>,
-  ): void {
-    this.servicesQuantityMap = servicesQuantityMap;
-  }
-
-  public getServicesQuantityMap(): Record<string, number> {
-    return this.servicesQuantityMap;
   }
 
   public getUsedServices(): Schedule[] {
