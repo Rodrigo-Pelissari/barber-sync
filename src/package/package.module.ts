@@ -7,9 +7,15 @@ import { PackageRepository } from './package.repository';
 import { ProductModule } from 'src/product/product.module';
 import { UserModule } from 'src/user/user.module';
 import { PackageProductRepository } from './package-product.repository';
+import { PackageProduct } from './entities/package-product.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Package]), ProductModule, UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Package]),
+    TypeOrmModule.forFeature([PackageProduct]),
+    ProductModule,
+    UserModule,
+  ],
   controllers: [PackageController],
   providers: [PackageService, PackageRepository, PackageProductRepository],
   exports: [PackageService, PackageRepository, PackageProductRepository],
