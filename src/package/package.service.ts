@@ -6,11 +6,16 @@ import { PackageRepository } from './package.repository';
 import { Package } from './entities/package.entity';
 import { ProductRepository } from 'src/product/product.repository';
 import { UserService } from 'src/user/user.service';
+import { PackageProductRepository } from './package-product.repository';
+import { ProductsType } from 'src/product/enums/productsType.enum';
+import { PackageProduct } from './entities/package-product.entity';
 
 @Injectable()
 export class PackageService {
+  pkg: any;
   constructor(
     private readonly repository: PackageRepository,
+    private readonly packageProductRepository: PackageProductRepository,
     private readonly productRepository: ProductRepository,
     private readonly userService: UserService,
   ) {}
@@ -20,36 +25,16 @@ export class PackageService {
       createPackageDto.customer,
     );
 
-    const customerActivePackage =
-      await this.repository.findActivePackageByCustomer(customer.id);
-
-    let packageNetValue = 0;
-
-    if (customerActivePackage) {
-      packageNetValue =
-        customerActivePackage.getGrossValue() -
-        customerActivePackage.getUsedValue();
-
-      customerActivePackage.isActive = false;
-
-      await this.repository.save(customerActivePackage);
-    }
-
-    const entity = new Package(
+    const packageEntity = new Package(
       customer,
-      createPackageDto.grossValue + packageNetValue,
-      0,
-      createPackageDto.servicesQuantityMap,
-      [],
+      createPackageDto.grossValue,
       true,
       createPackageDto.discount ? createPackageDto.discount : 0,
     );
 
-    await this.calculateAvailableServicesPerProduct(entity);
+    await this.setAvailableServicesByGrossValue(packageEntity);
 
-    const savedEntity = await this.repository.save(entity);
-
-    return new PackageDto(savedEntity);
+    return new PackageDto(packageEntity);
   }
 
   public async findAll(): Promise<PackageDto[]> {
@@ -100,27 +85,39 @@ export class PackageService {
   }
 
   public async delete(id: string): Promise<void> {
-    await this.repository.delete(id);
+    await this.repository.deleteById(id);
   }
 
-  private async calculateAvailableServicesPerProduct(
-    entity: Package,
+  private async setAvailableServicesByGrossValue(
+    packageEntity: Package,
   ): Promise<void> {
-    const products = await this.productRepository.findAll();
+    const products = await this.productRepository.findAllByType(
+      ProductsType.SERVICE,
+    );
 
-    if (!products || products.length === 0) {
-      throw new NotFoundException(
-        'No products found to calculate services quantity',
-      );
+    if (products.length === 0) {
+      throw new NotFoundException('No products found for type SERVICE');
     }
 
-    const availableValue = entity.grossValue - entity.usedValue;
-
-    entity.servicesQuantityMap = {};
+    const packageProductList: PackageProduct[] = [];
 
     for (const product of products) {
-      const serviceQuantity = Math.floor(availableValue / product.price);
-      entity.servicesQuantityMap[product.name] = serviceQuantity;
+      const totalAvailableQuantity = Math.floor(
+        packageEntity.grossValue / product.price,
+      );
+
+      const newPackageProduct = new PackageProduct(
+        packageEntity,
+        product,
+        totalAvailableQuantity,
+        0,
+        totalAvailableQuantity,
+      );
+
+      await this.packageProductRepository.save(newPackageProduct);
+      packageProductList.push(newPackageProduct);
     }
+
+    packageEntity.setPackageProducts(packageProductList);
   }
 }
