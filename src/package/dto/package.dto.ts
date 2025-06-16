@@ -8,7 +8,6 @@ export class PackageDto {
   grossValue: number;
   netValue: number;
   discount?: number;
-  servicesQuantityMap: Record<string, number>;
   usedServices: ScheduleDto[];
 
   constructor(entity: Package) {
@@ -17,7 +16,6 @@ export class PackageDto {
     this.grossValue = entity.getGrossValue();
     this.netValue = entity.getNetValue();
     this.discount = entity.getDiscount();
-    this.servicesQuantityMap = entity.getServicesQuantityMap();
     this.usedServices = entity
       .getUsedServices()
       .map((schedule) => new ScheduleDto(schedule));
