@@ -1,4 +1,4 @@
-import { IsNumber, IsObject, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreatePackageDto {
   @IsString()
@@ -9,7 +9,4 @@ export class CreatePackageDto {
 
   @IsNumber()
   discount?: number;
-
-  @IsObject()
-  servicesQuantityMap: Record<string, number>;
 }
